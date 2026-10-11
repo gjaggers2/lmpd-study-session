@@ -1,5 +1,5 @@
 'use strict';
-const APP_VERSION='v1';
+const APP_VERSION='v2';
 const $=s=>document.querySelector(s),V=()=>$('#view');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const LS={get:(k,d)=>{try{const v=localStorage.getItem('lmpd.'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set:(k,v)=>localStorage.setItem('lmpd.'+k,JSON.stringify(v))};
@@ -12,10 +12,10 @@ const DB={db:null,open(){return new Promise((res,rej)=>{const r=indexedDB.open('
  put(k,v){return new Promise(res=>{const t=this.db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>res(true);t.onerror=()=>res(false)})}};
 let M=null,QB=[],AUDIO={};
 async function loadMaterial(){let m=null;try{await DB.open();m=await DB.get('material')}catch(e){}
- if(!m){m=await (await fetch('data/material.json?v=1')).json();m.custom=false;try{await DB.put('material',m)}catch(e){}}
+ if(!m){m=await (await fetch('data/material.json?v=2')).json();m.custom=false;try{await DB.put('material',m)}catch(e){}}
  M=m;M.sections.sort((a,b)=>sopCmp(a.id,b.id))}
 async function saveMaterial(){M.custom=true;M.sections.sort((a,b)=>sopCmp(a.id,b.id));await DB.put('material',M)}
-async function resetMaterial(){const m=await (await fetch('data/material.json?v=1',{cache:'reload'})).json();m.custom=false;M=m;await DB.put('material',M)}
+async function resetMaterial(){const m=await (await fetch('data/material.json?v=2',{cache:'reload'})).json();m.custom=false;M=m;await DB.put('material',M)}
 const chName=n=>(M.chapters.find(c=>c.num==n)||{}).name||('Chapter '+n);
 const secById=id=>M.sections.find(s=>s.id===id);
 const chapters=()=>{const set=[...new Set(M.sections.map(s=>s.chapter))].sort((a,b)=>a-b);return set.map(n=>({num:n,name:chName(n),secs:M.sections.filter(s=>s.chapter==n)}))};
@@ -189,7 +189,7 @@ async function exportAll(){const d={app:'lmpd-study',v:APP_VERSION,at:new Date()
 async function importAll(f){if(!f)return;try{const d=JSON.parse(await f.text());if(d.app!=='lmpd-study')throw new Error('Not an LMPD Study backup');for(const k in d.ls)localStorage.setItem(k,d.ls[k]);if(d.material){M=d.material;await DB.put('material',M)}toast('Backup restored');go('library')}catch(e){alert('Import failed: '+e.message)}}
 
 /* ---------- Boot ---------- */
-(async function(){try{await loadMaterial();QB=await (await fetch('data/questions.json?v=1')).json();try{AUDIO=await (await fetch('data/audio.json?v=1')).json()}catch(e){AUDIO={}}}catch(e){V().innerHTML='<div class="card">Failed to load data. Connect once to download the material.</div>';return}
+(async function(){try{await loadMaterial();QB=await (await fetch('data/questions.json?v=2')).json();try{AUDIO=await (await fetch('data/audio.json?v=2')).json()}catch(e){AUDIO={}}}catch(e){V().innerHTML='<div class="card">Failed to load data. Connect once to download the material.</div>';return}
  $('#srcline').textContent='SOP · PDF updated '+M.source.pdfModified;initAudio();if('speechSynthesis' in window)speechSynthesis.onvoiceschanged=()=>{if(cur==='listen'&&P.mode==='tts'&&!P.playing)vListen()};go('library')})();
 if('serviceWorker'in navigator){let reloaded=false;const had=!!navigator.serviceWorker.controller;
  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!reloaded&&!P.playing){reloaded=true;location.reload()}});

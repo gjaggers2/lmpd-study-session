@@ -1,4 +1,4 @@
-const V='v1',C='lmpd-study-'+V,A=['./','index.html','styles.css?v=1','app.js?v=1','manifest.webmanifest','data/material.json?v=1','data/questions.json?v=1','data/audio.json?v=1','icons/icon-192.png','icons/icon-512.png','icons/icon-180.png'];
+const V='v2',C='lmpd-study-'+V,A=['./','index.html','styles.css?v=2','app.js?v=2','manifest.webmanifest','data/material.json?v=2','data/questions.json?v=2','data/audio.json?v=2','icons/icon-192.png','icons/icon-512.png','icons/icon-180.png'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(A.map(u=>new Request(u,{cache:'reload'})))))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x.startsWith('lmpd-study-')&&x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET'||new URL(r.url).origin!==location.origin)return;
