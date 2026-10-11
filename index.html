@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1f3a"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LMPD Study">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="stylesheet" href="styles.css?v=1"><title>LMPD Study Session</title></head><body>
+<header id="top"><div class="brand"><span class="badge">★</span><div><b>LMPD Study Session</b><small id="srcline">Standard Operating Procedures</small></div></div><button id="setBtn" class="icon" aria-label="Settings" onclick="go('settings')">⚙</button></header>
+<main id="view"></main>
+<div id="mini" class="mini hidden"></div>
+<nav id="tabs">
+<button data-t="library" onclick="go('library')"><i>📖</i>Library</button>
+<button data-t="listen" onclick="go('listen')"><i>🎧</i>Listen</button>
+<button data-t="quiz" onclick="go('quiz')"><i>✅</i>Quiz</button>
+<button data-t="notes" onclick="go('notes')"><i>📝</i>Notes</button>
+</nav>
+<audio id="aud" preload="none"></audio>
+<script src="app.js?v=1"></script></body></html>
